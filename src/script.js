@@ -1,9 +1,32 @@
-import { fetchBreeds } from "./cat-api";
+import { fetchBreeds } from "./cat-api.js";
 
-const outBreedsList = document.querySelector("breed-select");
+const breedsList = document.querySelector('.breed-select');
 
+// Приховуємо помилку та відображаємо лоадер перед виконанням запиту
+const errorElement = document.querySelector('.error');
+const loaderElement = document.querySelector('.loader');
+errorElement.style.display = 'none';
+loaderElement.style.display = 'block';
 
+function addOptionToSelectList(breed) {
+  const option = document.createElement('option');
+  option.value = breed.id;
+  option.textContent = breed.name;
+  breedsList.appendChild(option);
+}
 
 fetchBreeds()
-    .then((breeds) => {console.log("Breeds: ", breeds)})
-    .catch((err) => {console.log(err)});
+  .then((breeds) => {
+    // Додаємо опції до вибірки
+    breeds.forEach(addOptionToSelectList);
+
+    // Після успішного запиту, приховуємо лоадер та відображаємо вибірку
+    loaderElement.style.display = 'none';
+    breedsList.style.display = 'block';
+  })
+  .catch((error) => {
+    console.log(error);
+    // У разі помилки, приховуємо лоадер та показуємо повідомлення про помилку
+    loaderElement.style.display = 'none';
+    errorElement.style.display = 'block';
+  });
