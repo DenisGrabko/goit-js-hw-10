@@ -1,6 +1,9 @@
-import { fetchBreeds } from "./cat-api.js";
+// script.js
+
+import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
 
 const breedsList = document.querySelector('.breed-select');
+const catInfo = document.querySelector('.cat-info');
 
 // Приховуємо помилку та відображаємо лоадер перед виконанням запиту
 const errorElement = document.querySelector('.error');
@@ -13,6 +16,12 @@ function addOptionToSelectList(breed) {
   option.value = breed.id;
   option.textContent = breed.name;
   breedsList.appendChild(option);
+}
+
+function showCatInfo(result) {
+  const infoOfCat = document.createElement('div');
+  infoOfCat.textContent = result.name;
+  document.body.appendChild(infoOfCat);
 }
 
 fetchBreeds()
@@ -30,3 +39,23 @@ fetchBreeds()
     loaderElement.style.display = 'none';
     errorElement.style.display = 'block';
   });
+
+// Додаємо обробник подій для вибору породи
+breedsList.addEventListener('change', () => {
+  const selectedBreedId = breedsList.value;
+
+  // Отримуємо інформацію про кота за обраною породою та відображаємо її
+  fetchCatByBreed(selectedBreedId)
+    .then((result) => {
+      // Відображаємо дані про кота (назва породи, опис, темперамент)
+      catInfo.innerHTML = `
+        <h2>${result.breeds[0].name}</h2>
+        <p><strong>Опис:</strong> ${result.breeds[0].description}</p>
+        <p><strong>Темперамент:</strong> ${result.breeds[0].temperament}</p>
+        <img src="${result.url}" alt="${result.breeds[0].name}">
+      `;
+    })
+    .catch((error) => {
+      console.error('Помилка отримання інформації про кота:', error);
+    });
+});
