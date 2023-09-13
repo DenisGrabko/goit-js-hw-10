@@ -5,7 +5,7 @@ const catInfo = document.querySelector('.cat-info');
 
 const errorElement = document.querySelector('.error');
 const loaderElement = document.querySelector('.loader');
-errorElement.style.display = 'none';
+errorElement.style.display = 'none'; 
 loaderElement.style.display = 'block';
 
 function addOptionToSelectList(breed) {
@@ -15,19 +15,13 @@ function addOptionToSelectList(breed) {
   breedsList.appendChild(option);
 }
 
-function showCatInfo(result) {
-  const infoOfCat = document.createElement('div');
-  infoOfCat.textContent = result.name;
-  document.body.appendChild(infoOfCat);
-}
 
 fetchBreeds()
-  .then((breeds) => {
-    
+  .then((breeds) => {    
     breeds.forEach(addOptionToSelectList);
-
     
     loaderElement.style.display = 'none';
+    breedsList.style.display = 'block';
     breedsList.style.display = 'block';
   })
   .catch((error) => {
@@ -35,6 +29,8 @@ fetchBreeds()
    
     loaderElement.style.display = 'none';
     errorElement.style.display = 'block';
+    breedsList.style.display = 'none';
+    
   });
 
 
@@ -52,6 +48,7 @@ breedsList.addEventListener('change', () => {
       `;
     })
     .catch((error) => {
-      console.error('Помилка отримання інформації про кота:', error);
+     console.error('Помилка отримання інформації про кота:', error);
+     errorElement.style.display = 'block';     
     });
 });
